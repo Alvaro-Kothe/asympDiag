@@ -1,0 +1,13 @@
+^.*\.Rproj$
+^LICENSE\.md$
+^Makefile$
+^\.Rprofile$
+^\.Rproj\.user$
+^\.github$
+^\.lintr$
+^\.pre-commit-config\.yaml$
+^\.vscode$
+^cran-comments\.md$
+^renv$
+^renv\.lock$
+^screenshots$
