@@ -32,6 +32,15 @@ test_that("parametric_bootstrap simplify into vector or matrix", {
   )
 })
 
+test_that("parametric_bootstrap returns correct length with errors within simulations", {
+  foo <- expand.grid(a = factor(1:3), b = factor(1:3))
+  foo$y <- 1
+  fit <- glm(y ~ a + b, data = foo, family = poisson())
+  responses <- data.frame(s1 = foo$y, s2 = c(-1, rep(0, 8)), s3 = foo$y)
+  suppressWarnings(sim_res <- parametric_bootstrap(fit, statistic = coef, responses = responses))
+  expect_length(sim_res$result, 3)
+})
+
 test_that("health_check works as expected", {
   expect_error(bootstrap_health_check(list(NULL), FALSE, FALSE), "Could not refit")
   expect_warning(bootstrap_health_check(list("foo", NULL), FALSE, TRUE), "1 statistics not computed")

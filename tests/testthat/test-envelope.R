@@ -103,6 +103,18 @@ test_that("envelope works with complex responses", {
   expect_no_error(envelope(fit, responses = responses, refit_fn = refit_fn, plot.it = FALSE))
 })
 
+test_that("envelope works with errors within simulations", {
+  foo <- expand.grid(a = factor(1:3), b = factor(1:3))
+  foo$y <- 1
+  fit <- glm(y ~ a + b, data = foo, family = poisson())
+  responses <- data.frame(s1 = foo$y, s2 = c(-1, rep(0, 8)), s3 = foo$y)
+  expect_no_error(sim_res <- envelope(fit, responses = responses)) |>
+    suppressWarnings()
+  expect_identical(sim_res$lower, sim_res$observed, ignore_attr = TRUE)
+  expect_identical(sim_res$med, sim_res$observed, ignore_attr = TRUE)
+  expect_identical(sim_res$upper, sim_res$observed, ignore_attr = TRUE)
+})
+
 test_that("envelope don't show condition messages when its supposed to be removed", {
   responses <- list(y = 1:3)
   fit <- glm(1:3 ~ 1 + offset(2:4), family = poisson())

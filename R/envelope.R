@@ -82,23 +82,29 @@ envelope <- function(model, residual_fn = envel_resid,
   sim_result <- parametric_bootstrap(
     model = model, statistic = function(x) sort(residual_fn(x), na.last = TRUE),
     nsim = nsim, refit_fn = refit_fn, responses = responses,
-    simplify = TRUE, show_progress = show_progress,
+    simplify = FALSE, show_progress = show_progress,
     stat_hc = function(x) envelope_hc(x, length(obs_res)),
     show_warning_count = !no_warnings,
     show_not_converged_count = !converged_only,
     ...
   )
+  simulation_residuals <- matrix(NA_real_, nrow = length(obs_res), ncol = length(sim_result$result))
+  for (i in seq_along(sim_result$result)) {
+    if (!is.null(sim_result$result[[i]])) {
+      simulation_residuals[, i] <- sim_result$result[[i]]
+    }
+  }
 
-  mask <- rep(TRUE, ncol(sim_result$result))
+  mask <- rep(TRUE, ncol(simulation_residuals))
   if (no_warnings) {
     mask <- mask & !sim_result$simulation_warning
   }
   if (converged_only) {
     mask <- mask & with(sim_result, is.na(converged) | converged)
   }
-  sim_result$result <- sim_result$result[, mask, drop = FALSE]
+  simulation_residuals <- simulation_residuals[, mask, drop = FALSE]
 
-  residual_quantiles <- apply(sim_result$result, 1,
+  residual_quantiles <- apply(simulation_residuals, 1,
     stats::quantile,
     probs = c(alpha / 2, .5, 1 - alpha / 2), na.rm = TRUE
   )

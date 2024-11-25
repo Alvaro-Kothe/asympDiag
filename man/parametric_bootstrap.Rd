@@ -34,7 +34,8 @@ defaults to \code{get_refit(model, y, ...)}.}
 \item{show_progress}{Display a progress bar for the simulation iteration.}
 
 \item{simplify}{logical or character string; should the result be simplified to a vector,
-matrix or higher dimensional array if possible?}
+matrix or higher dimensional array if possible? If occurs any errors during
+the refit procedure, the results will be a list, regardless of the value of this argument.}
 
 \item{stat_hc}{A function that verifies if the computed statistic is correct.
 It should return nothing, just throw errors to halt execution.}
