@@ -79,7 +79,7 @@ envelope(fit)
 env_measures <- envelope(fit,
   residual_fn = function(x) residuals.lm(x, type = "pearson"), plot.it = FALSE
 )
-plot(env_measures, distribution = stats::qnorm)
+plot(env_measures, distribution = stats::qnorm, colors = c("gray", "black"))
 
 ## Using custom refit_fn
 if (require("survival")) {
