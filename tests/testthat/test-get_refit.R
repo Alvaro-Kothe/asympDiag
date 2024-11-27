@@ -41,16 +41,8 @@ test_that("default_refit_fn yield the same model as get_refit", {
 })
 
 test_that("can refit for models adjusted with cbind", {
-  data <- data.frame(
-    trials = c(10, 10, 10, 10, 10),
-    successes = c(4, 6, 7, 3, 5),
-    group = factor(c("A", "A", "B", "B", "C"))
-  )
-
-  fit <- glm(cbind(successes, trials - successes) ~ group,
-    data = data,
-    family = binomial()
-  )
+  data <- cbind_data()
+  fit <- simple_cbind_bin_fit()
   ystar <- simulate(fit, nsim = 1, seed = 1)[[1]]
   #  HACK: Add data = data because the test fails inside the test environment. Outside it runs fine.
   expect_no_error(new_fit <- update_using_formula(fit, ystar, data = data))

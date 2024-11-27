@@ -34,3 +34,19 @@ simple_surv_fit <- function() {
   data <- surv_data()
   survival::survreg(survival::Surv(time, status) ~ group, data = data, dist = "exponential")
 }
+
+cbind_data <- function() {
+  data.frame(
+    trials = c(10, 10, 10, 10, 10),
+    successes = c(4, 6, 7, 3, 5),
+    group = factor(c("A", "A", "B", "B", "C"))
+  )
+}
+
+simple_cbind_bin_fit <- function() {
+  data <- cbind_data()
+  fit <- glm(cbind(successes, trials - successes) ~ group,
+    data = data,
+    family = binomial()
+  )
+}
