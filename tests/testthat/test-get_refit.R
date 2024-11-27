@@ -1,14 +1,14 @@
 test_that("response is replaced when using c() as response", {
   fit <- lm(c(2, 4, 5) ~ c(3, 5, 7))
   model_refit <- refit_model(fit, c(1, 1, 1))
-  expect_equal(stats::model.frame(model_refit)[[1]], c(1, 1, 1))
+  expect_equal(get_model_response(model_refit), c(1, 1, 1))
 })
 
 test_that("response is replaced when using data", {
   df <- data.frame(y = c(2, 4, 5), x = c(1, 2, 3))
   fit <- lm(y ~ x, data = df)
   model_refit <- refit_model(fit, c(1, 1, 1))
-  expect_equal(stats::model.frame(model_refit)[[1]], c(1, 1, 1))
+  expect_equal(get_model_response(model_refit), c(1, 1, 1))
 })
 
 test_that("refit_safely works", {
@@ -47,7 +47,7 @@ test_that("can refit for models adjusted with cbind", {
   #  HACK: Add data = data because the test fails inside the test environment. Outside it runs fine.
   expect_no_error(new_fit <- update_using_formula(fit, ystar, data = data))
   expect_false(identical(coef(fit), coef(new_fit)))
-  expect_identical(model.frame(new_fit)[[1]], ystar, ignore_attr = TRUE)
+  expect_identical(get_model_response(new_fit), ystar, ignore_attr = TRUE)
 })
 
 test_that("find_refit_fn returns the expected function", {
