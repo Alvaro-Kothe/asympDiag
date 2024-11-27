@@ -2,14 +2,11 @@
 % Please edit documentation in R/get_refit.R
 \name{get_refit}
 \alias{get_refit}
-\alias{get_refit.default}
 \alias{get_refit.merMod}
 \alias{get_refit.glmmTMB}
-\title{Refit a model}
+\title{Refit the Model}
 \usage{
 get_refit(object, new_response, ...)
-
-\method{get_refit}{default}(object, new_response, ...)
 
 \method{get_refit}{merMod}(object, new_response, ...)
 
@@ -22,20 +19,10 @@ get_refit(object, new_response, ...)
 
 \item{...}{other arguments passed to \code{refit} or \code{update}.}
 }
-\value{
-A model with same class as \code{object}.
-}
 \description{
-Refit a model with a new response.
-}
-\details{
-This function uses \code{new_response} to refit \code{object} replacing its old response variable.
-If the class is \code{merMod} it uses \code{refit}, otherwise uses \code{\link[stats:update]{stats::update()}}.
-
-The default method tries to update the model response using it's \code{\link[stats:model.frame]{stats::model.frame()}},
-if it errors it tries to update the model by inserting the \code{new_response}
-directly into the object formula.
+This function is supposed to be used internally. Use \code{\link[=refit_model]{refit_model()}} instead.
 }
 \seealso{
 \code{\link[stats:update]{stats::update()}}
 }
+\keyword{internal}
