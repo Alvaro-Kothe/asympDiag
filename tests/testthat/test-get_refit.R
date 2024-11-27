@@ -65,3 +65,14 @@ test_that("find_refit_fn returns the expected function", {
   survival_y <- surv_data()$time
   expect_null(find_refit_fn(survival_fit, survival_y))
 })
+
+test_that("Can use update the dots for refit funcitons", {
+  pois_fit <- simple_pois_fit()
+  pois_y <- count_data()$y
+  model_refit <- refit_model(pois_fit, pois_y, family = gaussian())
+  expect_identical(model_refit$family$family, "gaussian")
+
+  ref_fn <- find_refit_fn(pois_fit, pois_y)
+  model_refit2 <- ref_fn(pois_fit, pois_y, family = gaussian())
+  expect_identical(model_refit, model_refit2)
+})

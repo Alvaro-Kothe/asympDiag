@@ -50,3 +50,16 @@ simple_cbind_bin_fit <- function() {
     family = binomial()
   )
 }
+
+count_data <- function() {
+  data.frame(
+    y = c(1, 3, 5, 7, 9, 11),
+    time = c(1, 2, 3, 4, 5, 6),
+    group = c("A", "A", "B", "B", "A", "B")
+  )
+}
+
+simple_pois_fit <- function() {
+  data <- count_data()
+  glm(y ~ time + group, family = poisson(link = "log"), data = data)
+}
