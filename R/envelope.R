@@ -201,7 +201,7 @@ envel_resid.lm <- function(object) abs(stats::rstudent(object))
 #'
 #' @export
 plot.AD_envelope <- function(x,
-                             colors = c("red", "black"),
+                             colors = getOption("asympDiag.plot.AD_envelope.colors"),
                              xlab = "Expected quantiles",
                              ylab = "Observed quantiles",
                              distribution = function(p) stats::qnorm((1 + p) / 2),

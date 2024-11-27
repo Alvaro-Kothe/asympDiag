@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{AD_envelope}(
   x,
-  colors = c("red", "black"),
+  colors = getOption("asympDiag.plot.AD_envelope.colors"),
   xlab = "Expected quantiles",
   ylab = "Observed quantiles",
   distribution = function(p) stats::qnorm((1 + p)/2),
