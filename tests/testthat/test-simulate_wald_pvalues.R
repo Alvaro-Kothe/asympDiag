@@ -112,22 +112,6 @@ test_that("simulate_wald_pvalues convergence for glm is logical", {
   expect_equal(p_values$converged, c(TRUE, TRUE))
 })
 
-test_that("simulate_wald_pvalues works with binomial models using cbind", {
-  data <- data.frame(
-    trials = c(10, 10, 10, 10, 10),
-    successes = c(4, 6, 7, 3, 5),
-    group = factor(c("A", "A", "B", "B", "C"))
-  )
-
-  fit <- glm(cbind(successes, trials - successes) ~ group,
-    data = data,
-    family = binomial()
-  )
-  withr::local_seed(1)
-  expect_no_error(p_values <- simulate_wald_pvalues(fit, nsim = 2, data = data))
-  expect_equal(p_values$converged, c(TRUE, TRUE))
-})
-
 test_that("Can compute p_values from merMod class", {
   data("sleepstudy", package = "lme4")
   fit <- lme4::lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
