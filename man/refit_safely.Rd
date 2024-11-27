@@ -16,3 +16,4 @@ refit_safely(.f, new_response, ...)
 \description{
 Calls f without throwing errors
 }
+\keyword{internal}

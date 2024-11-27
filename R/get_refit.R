@@ -1,18 +1,4 @@
-collapse_vec <- function(x) {
-  base::sprintf("c(%s)", paste0(x, collapse = ", "))
-}
-
-change_reponse_formula <- function(x) {
-  formula_string <- if (is.matrix(x)) {
-    columns_collapsed <- apply(x, 2, collapse_vec, simplify = FALSE)
-    base::sprintf("cbind(%s) ~ .", paste(columns_collapsed, collapse = ", "))
-  } else {
-    base::sprintf("%s ~ .", collapse_vec(x))
-  }
-  stats::as.formula(formula_string)
-}
-
-#' Refit a model
+#' Refit Model
 #'
 #' Refit a model with a new response.
 #'
@@ -27,10 +13,42 @@ change_reponse_formula <- function(x) {
 #' @param new_response the new response, may be a vector or a matrix.
 #' @param ... other arguments passed to `refit` or `update`.
 #' @return A model with same class as `object`.
-#' @seealso [stats::update()]
 #' @export
+refit_model <- function(object, new_response, ...) {
+  for (f in refitting_functions()) {
+    res <- try(f(object, new_response, ...), silent = TRUE)
+    if (!inherits(res, "try-error")) {
+      return(res)
+    }
+  }
+  stop("Refit failed.")
+}
+
+#' Find a working refitting function
+#' Try to refit the model using the previously used response
+#' @keywords internal
+find_refit_fn <- function(object, y) {
+  if (is.null(y)) {
+    return(refit_model)
+  }
+  for (f in refitting_functions()) {
+    res <- try(f(object, y), silent = TRUE)
+    if (!inherits(res, "try-error")) {
+      return(f)
+    }
+  }
+  return(NULL)
+}
+
+#' Refit the Model
+#'
+#' This function is supposed to be used internally. Use [refit_model()] instead.
+#'
+#' @inheritParams refit_model
+#' @seealso [stats::update()]
+#' @keywords internal
 get_refit <- function(object, new_response, ...) {
-  UseMethod("get_refit", object)
+  UseMethod("get_refit")
 }
 
 default_refit_fn <- function(refit_fn, model) {
@@ -41,7 +59,16 @@ default_refit_fn <- function(refit_fn, model) {
       stop("refit_fn should be a function that takes a vector as first argument.")
     }
   }
-  function(new_y, ...) get_refit(model, new_y, ...)
+
+  y <- get_model_response(model)
+  working_fit_fn <- find_refit_fn(model, y)
+  if (is.null(working_fit_fn)) {
+    stop(
+      "Default refitting methods doesn't work.",
+      " Define a refitting function in `refit_fn."
+    )
+  }
+  function(new_y, ...) working_fit_fn(model, new_y, ...)
 }
 
 #' Calls f without throwing errors
@@ -49,6 +76,7 @@ default_refit_fn <- function(refit_fn, model) {
 #' @param .f a function that refit a model.
 #' @param new_response response variable used to fit the model.
 #' @param ... arguments passed to other methods.
+#' @keywords internal
 refit_safely <- function(.f, new_response, ...) {
   warning_ <- NULL
   error_ <- NULL
@@ -68,26 +96,37 @@ refit_safely <- function(.f, new_response, ...) {
   list(value = result, warning = warning_, error = error_)
 }
 
+refitting_functions <- function() {
+  refitting_functions <- list(
+    get_refit,
+    update_using_model_frame,
+    update_using_formula
+  )
+}
+
 #' @rdname get_refit
 #' @export
-get_refit.default <- function(object, new_response, ...) {
-  if (!is.vector(new_response) && !is.matrix(new_response)) {
-    stop("`new_response` should be either a vector or matrix")
-  }
-  if (as.character(stats::formula(object)[[2]])[[1]] == "c") {
-    # The model was fitted using c(vec) ~ X
-    return(update_using_formula(object, new_response, ...))
-  }
-  tryCatch(
-    update_using_model_frame(object, new_response, ...),
-    error = function(e) update_using_formula(object, new_response, ...)
-  )
+get_refit.merMod <- function(object, new_response, ...) {
+  lme4::refit(object, new_response, ...)
+}
+
+#' @rdname get_refit
+#' @export
+get_refit.glmmTMB <- function(object, new_response, ...) {
+  glmmTMB::refit(object, new_response, ...)
 }
 
 #' Update the object with new response using only model frame.
 #'
 #' @inheritParams get_refit
 update_using_model_frame <- function(object, new_response, ...) {
+  if (as.character(stats::formula(object)[[2]])[[1]] == "c") {
+    stop("Can't update a model with formula defined with `c`.")
+  }
+  dots <- list(...)
+  if ("data" %in% names(dots)) {
+    stop("The `data` argument should not be provided.")
+  }
   model_frame <- stats::model.frame(object)
   if (is.vector(new_response)) {
     model_frame[, 1] <- new_response
@@ -107,18 +146,24 @@ update_using_model_frame <- function(object, new_response, ...) {
 #'
 #' @inheritParams get_refit
 update_using_formula <- function(object, new_response, ...) {
+  dots <- list(...)
+  if ("formula." %in% names(dots)) {
+    stop("The `formula.` argument should not be provided.")
+  }
   new_formula <- change_reponse_formula(new_response)
   stats::update(object, formula. = new_formula, ...)
 }
 
-#' @rdname get_refit
-#' @export
-get_refit.merMod <- function(object, new_response, ...) {
-  lme4::refit(object, new_response, ...)
+collapse_vec <- function(x) {
+  base::sprintf("c(%s)", paste0(x, collapse = ", "))
 }
 
-#' @rdname get_refit
-#' @export
-get_refit.glmmTMB <- function(object, new_response, ...) {
-  glmmTMB::refit(object, new_response, ...)
+change_reponse_formula <- function(x) {
+  formula_string <- if (is.matrix(x)) {
+    columns_collapsed <- apply(x, 2, collapse_vec, simplify = FALSE)
+    base::sprintf("cbind(%s) ~ .", paste(columns_collapsed, collapse = ", "))
+  } else {
+    base::sprintf("%s ~ .", collapse_vec(x))
+  }
+  stats::as.formula(formula_string)
 }
