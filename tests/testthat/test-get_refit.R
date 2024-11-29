@@ -66,6 +66,36 @@ test_that("find_refit_fn returns the expected function", {
   expect_null(find_refit_fn(survival_fit, survival_y))
 })
 
+test_that("Behavior when lme4 is unavailable using with_mocked_bindings", {
+  # Mock the requireNamespace function to return FALSE for "lme4"
+  with_mocked_bindings(
+    requireNamespace = function(pkg, quietly = TRUE) {
+      if (pkg == "lme4") {
+        return(FALSE)
+      } else {
+        return(base::requireNamespace(pkg, quietly))
+      }
+    },
+    {
+      # Verify that the mock works
+      expect_false(requireNamespace("lme4", quietly = TRUE))
+
+      lm_fit <- simple_lm_fit()
+      y <- simple_y()
+      expect_identical(find_refit_fn(lm_fit, y), update_using_model_frame)
+
+      lmer_fit <- simple_lmer_fit()
+      lmer_y <- lmer_data()$y
+      identical(find_refit_fn(lmer_fit, lmer_y), lme4::refit) |>
+        expect_false() |>
+        suppressWarnings()
+    }
+  )
+  identical(find_refit_fn(lmer_fit, lmer_y), lme4::refit) |>
+    expect_true() |>
+    suppressWarnings()
+})
+
 test_that("Can use update the dots for refit funcitons", {
   pois_fit <- simple_pois_fit()
   pois_y <- count_data()$y
