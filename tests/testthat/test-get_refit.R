@@ -57,7 +57,7 @@ test_that("find_refit_fn returns the expected function", {
 
   lmer_fit <- simple_lmer_fit()
   lmer_y <- lmer_data()$y
-  expect_identical(find_refit_fn(lmer_fit, lmer_y), get_refit) |>
+  expect_identical(find_refit_fn(lmer_fit, lmer_y), lme4::refit) |>
     suppressWarnings()
 
   # TODO: If there is a get_refit method for survival models, use it here

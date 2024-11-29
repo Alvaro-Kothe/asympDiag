@@ -2,15 +2,9 @@
 % Please edit documentation in R/get_refit.R
 \name{get_refit}
 \alias{get_refit}
-\alias{get_refit.merMod}
-\alias{get_refit.glmmTMB}
 \title{Refit the Model}
 \usage{
 get_refit(object, newresp, ...)
-
-\method{get_refit}{merMod}(object, newresp, ...)
-
-\method{get_refit}{glmmTMB}(object, newresp, ...)
 }
 \arguments{
 \item{object}{A model.}
