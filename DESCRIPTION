@@ -19,6 +19,7 @@ Suggests:
     lme4,
     MASS,
     Matrix,
+    rlang,
     sandwich,
     survival,
     testthat (>= 3.0.0),
