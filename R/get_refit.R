@@ -104,22 +104,11 @@ refit_safely <- function(.f, newresp, ...) {
 
 refitting_functions <- function() {
   refitting_functions <- list(
+    if (requireNamespace("lme4", quietly = TRUE)) lme4::refit else NULL, # for lme4::{,g}lmer and glmmTMB::glmmTMB
     get_refit,
     update_using_model_frame,
     update_using_formula
   )
-}
-
-#' @rdname get_refit
-#' @export
-get_refit.merMod <- function(object, newresp, ...) {
-  lme4::refit(object, newresp, ...)
-}
-
-#' @rdname get_refit
-#' @export
-get_refit.glmmTMB <- function(object, newresp, ...) {
-  glmmTMB::refit(object, newresp, ...)
 }
 
 #' Update the object with new response using only model frame.
