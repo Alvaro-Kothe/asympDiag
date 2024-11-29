@@ -162,3 +162,6 @@ change_reponse_formula <- function(x) {
   }
   stats::as.formula(formula_string)
 }
+
+# to mock
+requireNamespace <- NULL # nolint
