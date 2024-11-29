@@ -210,42 +210,25 @@ test_that("simulate_wald_pvalues() with custom method works", {
   }
 
   # nolint start: object_name_linter
-  nobs.foo <- function(object, ...) {
-    length(object$y)
-  }
-  assign("nobs.foo", nobs.foo, envir = .GlobalEnv)
-
   simulate.foo <- function(object, nsim = 1, seed = NULL, ...) {
     mu <- object$fitted.values
-
     replicate(nsim, rep(NA, length(mu)), simplify = FALSE)
   }
-  assign("simulate.foo", simulate.foo, envir = .GlobalEnv)
-
-  update.foo <- function(object, ...) {
-    object
-  }
-  assign("update.foo", update.foo, envir = .GlobalEnv)
-
-  vcov.foo <- function(object) {
-    matrix(NA, nrow = 2, ncol = 2)
-  }
-  assign("vcov.foo", vcov.foo, envir = .GlobalEnv)
-
-  coef.foo <- function(object) {
-    rep_len(NA, 2)
-  }
-  assign("coef.foo", coef.foo, envir = .GlobalEnv)
-
-  formula.foo <- function(object) {
-    object$formula
-  }
-  assign("formula.foo", formula.foo, envir = .GlobalEnv)
+  vcov.foo <- function(object, ...) matrix(NA, nrow = 2, ncol = 2)
+  coef.foo <- function(object, ...) rep_len(NA, 2)
+  get_refit.foo <- function(object, newresp, ...) object
   # nolint end
 
+  # HACK: Make S3 methods work in test environments.
+  #  https://github.com/r-lib/testthat/issues/720#issuecomment-378103619
+  assign("simulate.foo", simulate.foo, envir = .GlobalEnv)
+  assign("vcov.foo", vcov.foo, envir = .GlobalEnv)
+  assign("coef.foo", coef.foo, envir = .GlobalEnv)
+  assign("get_refit.foo", get_refit.foo, envir = .GlobalEnv)
 
   fit <- foo(mpg ~ cyl, mtcars)
 
+  # Fail because there should not be valid p-values
   suppressWarnings(expect_error(simulate_wald_pvalues(fit, nsim = 2, plot.it = TRUE)))
   suppressWarnings(expect_no_error(sim <- simulate_wald_pvalues(fit, nsim = 2, plot.it = FALSE)))
 
@@ -255,12 +238,8 @@ test_that("simulate_wald_pvalues() with custom method works", {
     sim$simulation_vcov[[1]],
     matrix(NA, nrow = 2, ncol = 2)
   )
-
   rm(
-    list = c(
-      "simulate.foo", "update.foo", "vcov.foo", "coef.foo", "formula.foo",
-      "nobs.foo"
-    ),
+    list = c("simulate.foo", "vcov.foo", "coef.foo", "get_refit.foo"),
     envir = .GlobalEnv
   )
 })
