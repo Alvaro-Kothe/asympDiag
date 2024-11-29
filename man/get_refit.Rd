@@ -20,9 +20,14 @@ get_refit(object, newresp, ...)
 \item{...}{other arguments passed to \code{refit} or \code{update}.}
 }
 \description{
-This function is supposed to be used internally. Use \code{\link[=refit_model]{refit_model()}} instead.
+Refit a regression model.
+}
+\details{
+This generic method refit the \code{object} with the newresp.
+It shold maintain the \code{object} properties by default, but some aspects of
+the default fitting method may be overwritten with the \code{...}.
 }
 \seealso{
-\code{\link[stats:update]{stats::update()}}
+\code{\link[stats:update]{stats::update()}}, \code{\link[lme4:refit]{lme4::refit()}}
 }
 \keyword{internal}

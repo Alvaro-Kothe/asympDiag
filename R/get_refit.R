@@ -42,12 +42,18 @@ find_refit_fn <- function(object, y) {
 
 #' Refit the Model
 #'
-#' This function is supposed to be used internally. Use [refit_model()] instead.
+#' Refit a regression model.
+#'
+#' This generic method refit the `object` with the newresp.
+#' It shold maintain the `object` properties by default, but some aspects of
+#' the default fitting method may be overwritten with the `...`.
 #'
 #' @inheritParams refit_model
-#' @seealso [stats::update()]
+#' @seealso [stats::update()], [lme4::refit()]
 #' @keywords internal
 get_refit <- function(object, newresp, ...) {
+  # TODO: If there is a conventional generic method to refit a model,
+  #  preferably from the `stats` package, use it and delete this method.
   UseMethod("get_refit")
 }
 
