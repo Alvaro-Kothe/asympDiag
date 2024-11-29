@@ -4,17 +4,17 @@
 \alias{update_using_formula}
 \title{Update the object using only the formula}
 \usage{
-update_using_formula(object, new_response, ...)
+update_using_formula(object, newresp, ...)
 }
 \arguments{
 \item{object}{A model.}
 
-\item{new_response}{the new response, may be a vector or a matrix.}
+\item{newresp}{the new response, may be a vector or a matrix.}
 
 \item{...}{other arguments passed to \code{refit} or \code{update}.}
 }
 \description{
-Create a new formula with \code{new_response} values directly on the formula left hand side.
+Create a new formula with \code{newresp} values directly on the formula left hand side.
 }
 \details{
 This function is designed to be used as a fallback for \code{\link[=update_using_model_frame]{update_using_model_frame()}}

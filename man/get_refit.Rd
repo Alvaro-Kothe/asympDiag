@@ -6,16 +6,16 @@
 \alias{get_refit.glmmTMB}
 \title{Refit the Model}
 \usage{
-get_refit(object, new_response, ...)
+get_refit(object, newresp, ...)
 
-\method{get_refit}{merMod}(object, new_response, ...)
+\method{get_refit}{merMod}(object, newresp, ...)
 
-\method{get_refit}{glmmTMB}(object, new_response, ...)
+\method{get_refit}{glmmTMB}(object, newresp, ...)
 }
 \arguments{
 \item{object}{A model.}
 
-\item{new_response}{the new response, may be a vector or a matrix.}
+\item{newresp}{the new response, may be a vector or a matrix.}
 
 \item{...}{other arguments passed to \code{refit} or \code{update}.}
 }

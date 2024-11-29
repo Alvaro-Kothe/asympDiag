@@ -2,21 +2,21 @@
 #'
 #' Refit a model with a new response.
 #'
-#' This function uses `new_response` to refit `object` replacing its old response variable.
+#' This function uses `newresp` to refit `object` replacing its old response variable.
 #' If the class is `merMod` it uses `refit`, otherwise uses [stats::update()].
 #'
 #' The default method tries to update the model response using it's [stats::model.frame()],
-#' if it errors it tries to update the model by inserting the `new_response`
+#' if it errors it tries to update the model by inserting the `newresp`
 #' directly into the object formula.
 #'
 #' @param object A model.
-#' @param new_response the new response, may be a vector or a matrix.
+#' @param newresp the new response, may be a vector or a matrix.
 #' @param ... other arguments passed to `refit` or `update`.
 #' @return A model with same class as `object`.
 #' @export
-refit_model <- function(object, new_response, ...) {
+refit_model <- function(object, newresp, ...) {
   for (f in refitting_functions()) {
-    res <- try(f(object, new_response, ...), silent = TRUE)
+    res <- try(f(object, newresp, ...), silent = TRUE)
     if (!inherits(res, "try-error")) {
       return(res)
     }
@@ -47,7 +47,7 @@ find_refit_fn <- function(object, y) {
 #' @inheritParams refit_model
 #' @seealso [stats::update()]
 #' @keywords internal
-get_refit <- function(object, new_response, ...) {
+get_refit <- function(object, newresp, ...) {
   UseMethod("get_refit")
 }
 
@@ -74,15 +74,15 @@ default_refit_fn <- function(refit_fn, model) {
 #' Calls f without throwing errors
 #'
 #' @param .f a function that refit a model.
-#' @param new_response response variable used to fit the model.
+#' @param newresp response variable used to fit the model.
 #' @param ... arguments passed to other methods.
 #' @keywords internal
-refit_safely <- function(.f, new_response, ...) {
+refit_safely <- function(.f, newresp, ...) {
   warning_ <- NULL
   error_ <- NULL
   result <- tryCatch(
     withCallingHandlers(
-      .f(new_response, ...),
+      .f(newresp, ...),
       warning = function(w) {
         warning_ <<- conditionMessage(w)
         invokeRestart("muffleWarning")
@@ -106,20 +106,20 @@ refitting_functions <- function() {
 
 #' @rdname get_refit
 #' @export
-get_refit.merMod <- function(object, new_response, ...) {
-  lme4::refit(object, new_response, ...)
+get_refit.merMod <- function(object, newresp, ...) {
+  lme4::refit(object, newresp, ...)
 }
 
 #' @rdname get_refit
 #' @export
-get_refit.glmmTMB <- function(object, new_response, ...) {
-  glmmTMB::refit(object, new_response, ...)
+get_refit.glmmTMB <- function(object, newresp, ...) {
+  glmmTMB::refit(object, newresp, ...)
 }
 
 #' Update the object with new response using only model frame.
 #'
 #' @inheritParams get_refit
-update_using_model_frame <- function(object, new_response, ...) {
+update_using_model_frame <- function(object, newresp, ...) {
   if (as.character(stats::formula(object)[[2]])[[1]] == "c") {
     stop("Can't update a model with formula defined with `c`.")
   }
@@ -128,29 +128,29 @@ update_using_model_frame <- function(object, new_response, ...) {
     stop("The `data` argument should not be provided.")
   }
   model_frame <- stats::model.frame(object)
-  if (is.vector(new_response)) {
-    model_frame[, 1] <- new_response
-  } else if (is.matrix(new_response)) {
+  if (is.vector(newresp)) {
+    model_frame[, 1] <- newresp
+  } else if (is.matrix(newresp)) {
     model_frame[[1]] <- NULL
-    model_frame <- cbind(new_response, model_frame)
+    model_frame <- cbind(newresp, model_frame)
   }
   stats::update(object, data = model_frame, ...)
 }
 
 #' Update the object using only the formula
 #'
-#' Create a new formula with `new_response` values directly on the formula left hand side.
+#' Create a new formula with `newresp` values directly on the formula left hand side.
 #'
 #' This function is designed to be used as a fallback for [update_using_model_frame()]
 #' as it's prone to run with memory issues.
 #'
 #' @inheritParams get_refit
-update_using_formula <- function(object, new_response, ...) {
+update_using_formula <- function(object, newresp, ...) {
   dots <- list(...)
   if ("formula." %in% names(dots)) {
     stop("The `formula.` argument should not be provided.")
   }
-  new_formula <- change_reponse_formula(new_response)
+  new_formula <- change_reponse_formula(newresp)
   stats::update(object, formula. = new_formula, ...)
 }
 
