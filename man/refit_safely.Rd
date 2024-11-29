@@ -4,12 +4,12 @@
 \alias{refit_safely}
 \title{Calls f without throwing errors}
 \usage{
-refit_safely(.f, new_response, ...)
+refit_safely(.f, newresp, ...)
 }
 \arguments{
 \item{.f}{a function that refit a model.}
 
-\item{new_response}{response variable used to fit the model.}
+\item{newresp}{response variable used to fit the model.}
 
 \item{...}{arguments passed to other methods.}
 }

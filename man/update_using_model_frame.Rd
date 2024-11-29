@@ -4,12 +4,12 @@
 \alias{update_using_model_frame}
 \title{Update the object with new response using only model frame.}
 \usage{
-update_using_model_frame(object, new_response, ...)
+update_using_model_frame(object, newresp, ...)
 }
 \arguments{
 \item{object}{A model.}
 
-\item{new_response}{the new response, may be a vector or a matrix.}
+\item{newresp}{the new response, may be a vector or a matrix.}
 
 \item{...}{other arguments passed to \code{refit} or \code{update}.}
 }
