@@ -172,3 +172,37 @@ test_that("envelope recommended residual is correct", {
   expect_equal(envel_resid(fit_poi), will_resid(fit_poi))
   expect_equal(envel_resid(fit_lm), abs(rstudent(fit_lm)))
 })
+
+test_that("envelope_residual extracts the correct method", {
+  fit_lm <- simple_lm_fit()
+  fit_poi <- simple_pois_fit()
+  fit_bin <- simple_cbind_bin_fit()
+
+  will_resid <- function(obj) {
+    h <- hatvalues(obj)
+    sqrt(
+      rstandard(obj, type = "deviance")^2 * (1 - h) +
+        rstandard(obj, type = "pearson")^2 * h
+    )
+  }
+
+  expect_equal(envelope_residual(fit_lm)(fit_lm), abs(rstudent(fit_lm)))
+  expect_equal(envelope_residual(fit_bin)(fit_bin), will_resid(fit_bin))
+  expect_equal(envelope_residual(fit_poi)(fit_poi), will_resid(fit_poi))
+  expect_equal(envelope_residual(fit_poi)(fit_bin), will_resid(fit_bin))
+  expect_equal(envelope_residual(fit_poi)(fit_lm), abs(rstudent(fit_lm)))
+})
+
+test_that("can manipulate ... with envelope_residual", {
+  fit_poi <- simple_pois_fit()
+  # Shouldn't error, because it's only generating a residual function.
+  expect_no_error(res_fn <- envelope_residual(fit_poi, infl = NULL))
+  # When we apply the function it should throw an error.
+  expect_error(res_fn(fit_poi))
+})
+
+test_that("envelope_residual works with envelope", {
+  fit_lm <- simple_lm_fit()
+  withr::local_seed(1)
+  expect_no_error(envelope(fit_lm, nsim = 2, residual_fn = envelope_residual(fit_lm), plot.it = FALSE))
+})
