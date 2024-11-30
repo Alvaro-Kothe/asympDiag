@@ -145,6 +145,51 @@ envelope_hc <- function(stat, nobs) {
   }
 }
 
+#' Recommended Residuals for Envelope Plots
+#'
+#' This function returns a function that computes residuals for envelope plots.
+#' These residuals are typically absolute values to be compared against the half-normal distribution.
+#'
+#' For objects of class `glm`, the default residuals are:
+#' - Deviance residuals, except for `poisson` and `binomial` families.
+#' - For `poisson` and `binomial` families, the residuals are [rstudent()], for the case deletion residual.
+#'
+#' For objects of class `lm`, the default residuals are also [rstudent()].
+#'
+#' For other classes, the default is [stats::residuals()], meaning no specialized recommendation is currently provided.
+#'
+#' @param object An object for which model residuals can be extracted.
+#' @param ... Additional arguments passed to the residual function.
+#'
+#' @return A function that computes residuals from an object
+#'
+#' @export
+envelope_residual <- function(object, ...) {
+  UseMethod("envelope_residual")
+}
+
+#' @rdname envelope_residual
+#' @export
+envelope_residual.default <- function(object, ...) {
+  function(obj) abs(stats::residuals(obj, ...))
+}
+
+#' @rdname envelope_residual
+#' @export
+envelope_residual.glm <- function(object, ...) {
+  switch(object$family$family,
+    binomial = ,
+    poisson = function(obj) abs(stats::rstudent(obj, ...)),
+    function(obj) abs(stats::residuals.glm(obj, type = "deviance", ...))
+  )
+}
+
+#' @rdname envelope_residual
+#' @export
+envelope_residual.lm <- function(object, ...) {
+  function(obj) abs(stats::rstudent(obj, ...))
+}
+
 #' Recommended Residual for Envelope
 #'
 #' This function retrieves a function for recommended residuals for envelope.
