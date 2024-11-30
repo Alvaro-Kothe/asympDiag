@@ -6,6 +6,7 @@
 ^\.github$
 ^\.lintr$
 ^\.pre-commit-config\.yaml$
+^\.editorconfig$
 ^\.vscode$
 ^cran-comments\.md$
 ^renv$
