@@ -6,7 +6,7 @@
 \usage{
 envelope(
   model,
-  residual_fn = envel_resid,
+  residual_fn = envelope_residual(model),
   alpha = 0.05,
   nsim = 100,
   responses = NULL,
