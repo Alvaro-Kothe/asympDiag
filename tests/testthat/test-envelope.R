@@ -206,3 +206,10 @@ test_that("envelope_residual works with envelope", {
   withr::local_seed(1)
   expect_no_error(envelope(fit_lm, nsim = 2, residual_fn = envelope_residual(fit_lm), plot.it = FALSE))
 })
+
+test_that("envelope works with envel_resid", {
+  fit <- simple_pois_fit()
+  withr::local_seed(1)
+  yyok <- simulate(fit, 5)
+  expect_no_error(envelope(fit, residual_fn = envel_resid, responses = yyok, no_warnings = TRUE))
+})

@@ -69,7 +69,7 @@
 #'  [parametric_bootstrap()]
 #'
 #' @export
-envelope <- function(model, residual_fn = envel_resid,
+envelope <- function(model, residual_fn = envelope_residual(model),
                      alpha = .05, nsim = 100,
                      responses = NULL,
                      no_warnings = FALSE,
@@ -193,6 +193,7 @@ envelope_residual.lm <- function(object, ...) {
 #' Recommended Residual for Envelope
 #'
 #' This function retrieves a function for recommended residuals for envelope.
+#' `envel_resid()` has been superseded in favour of [envelope_residual()].
 #'
 #' The residuals are absolute residuals to be plotted against the half-normal distribution.
 #' For class `glm` the default is deviance, except for the families poisson and binomial,

@@ -20,6 +20,7 @@ envel_resid(object)
 }
 \description{
 This function retrieves a function for recommended residuals for envelope.
+\code{envel_resid()} has been superseded in favour of \code{\link[=envelope_residual]{envelope_residual()}}.
 }
 \details{
 The residuals are absolute residuals to be plotted against the half-normal distribution.
