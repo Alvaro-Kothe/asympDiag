@@ -12,9 +12,9 @@ Description: Tools to diagnose and assess the sample size of
 License: MIT + file LICENSE
 URL: https://github.com/Alvaro-Kothe/asympDiag
 BugReports: https://github.com/Alvaro-Kothe/asympDiag/issues
-Imports: 
+Imports:
     cli
-Suggests: 
+Suggests:
     glmmTMB,
     lme4,
     MASS,
