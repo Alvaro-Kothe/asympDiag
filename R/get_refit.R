@@ -71,7 +71,7 @@ default_refit_fn <- function(refit_fn, model) {
   if (is.null(working_fit_fn)) {
     stop(
       "Default refitting methods doesn't work.",
-      " Define a refitting function in `refit_fn."
+      " Define a refitting function in `refit_fn`."
     )
   }
   function(new_y, ...) working_fit_fn(model, new_y, ...)
