@@ -36,7 +36,7 @@ glm.D93 <- glm(counts ~ outcome + treatment, family = poisson())
 envelope(glm.D93)
 ```
 
-![envelope](https://github.com/user-attachments/assets/b32de5a5-d398-436e-8577-f875a3edb07a)
+![envelope](https://github.com/user-attachments/assets/edab6e53-4114-4d51-9236-b9bc56ecf1a0)
 
 The `envelope()` function generates an envelope plot that compares observed
 residuals to those expected under the model, helping to identify potential
@@ -51,7 +51,7 @@ Wald test's asymptotic approximation:
 simulate_wald_pvalues(glm.D93, nsim = 10000)
 ```
 
-![pvalues](https://github.com/user-attachments/assets/5dbd4101-6f0f-4ec1-8c89-5e1c66a834d8)
+![pvalues](https://github.com/user-attachments/assets/3310ad5d-4b20-4265-bbfb-ca1e70cdac0d)
 
 The function `simulate_wald_pvalues()` provides a distribution of p-values from the Monte
 Carlo simulation, enabling a deeper assessment of whether the sample size
