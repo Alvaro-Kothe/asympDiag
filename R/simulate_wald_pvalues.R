@@ -3,6 +3,8 @@
 #' This function performs Monte Carlo simulations to generate p-values for
 #' model coefficients by refitting the model with new simulated responses and
 #' computing the Wald test statistics for each simulation.
+#' It's standard behavior verify if the type I error from Wald tests are under control, considering the provided model
+#' as "true", i.e., the model assumptions are valid.
 #' It supports univariate and joint Wald tests, using chi-squared
 #' distributions to calculate p-values.
 #'
