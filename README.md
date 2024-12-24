@@ -6,6 +6,9 @@ The `asympDiag` package provides tools for diagnosing statistical
 regression models using Monte Carlo simulations.
 It helps assess the adequacy of asymptotic approximations for Wald tests and
 verify residuals with envelopes.
+Most of the functions uses generic methods from the `stats` package and are compatible
+with models fitted with the functions `lm`, `glm`, `glm.nb`, `lmer` and `glmer`.
+If your model class is not compatible, you can still generate the diagnostic plots with the `responses` and `refit_fn` arguments.
 
 ## Installation
 
