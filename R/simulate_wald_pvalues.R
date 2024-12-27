@@ -95,6 +95,7 @@ simulate_wald_pvalues <- function(model, nsim = 1000, responses = NULL,
   out <- list(
     simulation_fixef = lapply(sim_result$result, function(x) x[[1]]),
     simulation_vcov = lapply(sim_result$result, function(x) x[[2]]),
+    simulation_message = sim_result$simulation_message,
     simulation_warning = sim_result$simulation_warning,
     converged = sim_result$converged,
     responses = responses, pvalues_matrix = pvalues$matrix, pvalues_joint = pvalues$joint,
@@ -177,6 +178,7 @@ compute_p_values_joint <- function(coefs, vcov, generator_coef) {
 #'   distinguish between the p-value and U(0, 1) curves. Defaults to TRUE.
 #' @param converged_only Use p-values from converged models only.
 #' @param no_warnings If TRUE, ignore simulations that threw warnings.
+#' @param no_messages If TRUE, ignore simulations that shown messages.
 #' @param ylab The label for the y-axis. Defaults to "Empirical cumulative distribution".
 #' @param xlab The label for the x-axis. Defaults to "p-value".
 #' @param ... extra arguments passed to [graphics::plot]
@@ -197,7 +199,7 @@ plot.AD_pvalues <- function(x,
                             ks_test = TRUE, signif = c(0.01, 0.05, 0.10),
                             discrepancy_tol = .1,
                             plot_uniform = TRUE, uniform_legend = TRUE,
-                            converged_only = FALSE, no_warnings = FALSE,
+                            converged_only = FALSE, no_warnings = FALSE, no_messages = FALSE,
                             ylab = "Empirical cumulative distribution", xlab = "p-value",
                             ...,
                             ask = prod(graphics::par("mfcol")) < length(which) && grDevices::dev.interactive()) {
@@ -208,6 +210,9 @@ plot.AD_pvalues <- function(x,
   mask <- if (converged_only) x$converged else TRUE
   if (no_warnings) {
     mask <- mask & (!x$simulation_warning)
+  }
+  if (no_messages) {
+    mask <- mask & (!x$simulation_message)
   }
   for (plot_index in seq_along(which)) {
     i <- which[[plot_index]]

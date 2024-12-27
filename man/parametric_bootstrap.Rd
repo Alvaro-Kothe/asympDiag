@@ -13,6 +13,7 @@ parametric_bootstrap(
   show_progress = TRUE,
   simplify = TRUE,
   stat_hc = NULL,
+  show_message_count = TRUE,
   show_warning_count = TRUE,
   show_not_converged_count = TRUE,
   ...
@@ -39,6 +40,9 @@ the refit procedure, the results will be a list, regardless of the value of this
 
 \item{stat_hc}{A function that verifies if the computed statistic is correct.
 It should return nothing, just throw errors to halt execution.}
+
+\item{show_message_count}{Show total of captured messages from \code{refit_fn} as a message.
+It only shows if the number of messages is greater than 0.}
 
 \item{show_warning_count}{Show total of captured warnings from \code{refit_fn} as a warning.
 It only shows if the number of warnings is greater than 0.}

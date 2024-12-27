@@ -15,6 +15,7 @@
   uniform_legend = TRUE,
   converged_only = FALSE,
   no_warnings = FALSE,
+  no_messages = FALSE,
   ylab = "Empirical cumulative distribution",
   xlab = "p-value",
   ...,
@@ -45,6 +46,8 @@ distinguish between the p-value and U(0, 1) curves. Defaults to TRUE.}
 \item{converged_only}{Use p-values from converged models only.}
 
 \item{no_warnings}{If TRUE, ignore simulations that threw warnings.}
+
+\item{no_messages}{If TRUE, ignore simulations that shown messages.}
 
 \item{ylab}{The label for the y-axis. Defaults to "Empirical cumulative distribution".}
 

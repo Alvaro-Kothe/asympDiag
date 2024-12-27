@@ -19,8 +19,7 @@
 #' @param nsim The number of simulations to perform for envelope construction.
 #'   Defaults to 100.
 #' @inheritParams parametric_bootstrap
-#' @param no_warnings If TRUE, ignore simulations that threw warnings.
-#' @param converged_only If TRUE, ignore simulations that diverged.
+#' @inheritParams plot.AD_pvalues
 #' @param plot.it Logical. Generate envelope plot.
 #' @param ... Extra arguments to [get_refit()]
 #'
@@ -73,6 +72,7 @@ envelope <- function(model, residual_fn = envelope_residual(model),
                      alpha = .05, nsim = 100,
                      responses = NULL,
                      no_warnings = FALSE,
+                     no_messages = FALSE,
                      converged_only = FALSE,
                      show_progress = TRUE,
                      plot.it = TRUE,
@@ -98,6 +98,9 @@ envelope <- function(model, residual_fn = envelope_residual(model),
   mask <- rep(TRUE, ncol(simulation_residuals))
   if (no_warnings) {
     mask <- mask & !sim_result$simulation_warning
+  }
+  if (no_messages) {
+    mask <- mask & !sim_result$simulation_message
   }
   if (converged_only) {
     mask <- mask & with(sim_result, is.na(converged) | converged)

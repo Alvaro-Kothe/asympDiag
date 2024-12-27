@@ -8,6 +8,12 @@ simple_lm_fit <- function() {
   lm(y ~ x)
 }
 
+msg_fit <- function(y = simple_y()) {
+  message("message")
+  x <- simple_x()
+  lm(y ~ x)
+}
+
 lmer_data <- function() {
   data.frame(
     subject = rep(1:5, each = 3),

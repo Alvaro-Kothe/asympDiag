@@ -253,6 +253,17 @@ test_that("plot_pvalues errors when there is no available p-value to plot", {
   )
 })
 
+test_that("plot pvalues errors when all pvalues generated with messages are removed", {
+  fit <- simple_lm_fit()
+  (p_values <- simulate_wald_pvalues(fit, nsim = 2, refit_fn = msg_fit)) |>
+    expect_message("2 simulations shown messages")
+  expect_no_error(plot(p_values, ask = FALSE))
+  expect_error(
+    plot(p_values, ask = FALSE, no_messages = TRUE),
+    "^No p-value to plot\\.$"
+  )
+})
+
 test_that("plot pvalues works with captions as a character vector", {
   fit <- simple_lm_fit()
   p_values <- simulate_wald_pvalues(fit, nsim = 3, plot.it = FALSE)
