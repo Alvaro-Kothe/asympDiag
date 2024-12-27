@@ -149,6 +149,13 @@ test_that("envelope don't show condition messages when its supposed to be remove
       )
     )
   )
+  withr::local_seed(1)
+  envelope(simple_lm_fit(), nsim = 2, refit_fn = function(.y) msg_fit(.y)) |>
+    expect_message("2 simulations shown messages")
+  # It errors when remove all the simulations
+  envelope(simple_lm_fit(), nsim = 2, refit_fn = function(.y) msg_fit(.y), no_messages = TRUE) |>
+    expect_message("2 simulations shown messages") |>
+    expect_error()
 })
 
 test_that("compute values outside correctly", {

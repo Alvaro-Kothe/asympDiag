@@ -11,6 +11,7 @@ envelope(
   nsim = 100,
   responses = NULL,
   no_warnings = FALSE,
+  no_messages = FALSE,
   converged_only = FALSE,
   show_progress = TRUE,
   plot.it = TRUE,
@@ -34,7 +35,9 @@ Defaults to 100.}
 
 \item{no_warnings}{If TRUE, ignore simulations that threw warnings.}
 
-\item{converged_only}{If TRUE, ignore simulations that diverged.}
+\item{no_messages}{If TRUE, ignore simulations that shown messages.}
+
+\item{converged_only}{Use p-values from converged models only.}
 
 \item{show_progress}{Display a progress bar for the simulation iteration.}
 

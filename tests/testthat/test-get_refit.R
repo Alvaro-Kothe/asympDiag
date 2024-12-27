@@ -19,6 +19,20 @@ test_that("refit_safely works", {
   expect_equal(coef(refit_safely(custom_refit, 1:3)$value), c("(Intercept)" = -0.5, "c(3, 5, 7)" = 0.5))
 })
 
+test_that("refit_safely can capture all conditional messages", {
+  call_messages_error <- function(newresp = NULL, throw = TRUE, ...) {
+    message("foo")
+    warning("bar")
+    if (throw) stop("baz")
+    c(1, 2, 3)
+  }
+  # HACK: There is a \n in message
+  expect_no_condition(refit_safely(call_messages_error, NULL, throw = TRUE)) |>
+    expect_mapequal(list(value = NULL, message = "foo\n", warning = "bar", error = "baz"))
+  expect_no_condition(refit_safely(call_messages_error, NULL, throw = FALSE)) |>
+    expect_mapequal(list(value = c(1, 2, 3), message = "foo\n", warning = "bar", error = NULL))
+})
+
 test_that("default_refit_fn yield the same model as get_refit", {
   my_fit_fn <- function(y) {
     lm(y ~ c(1, 2, 3))

@@ -86,12 +86,17 @@ default_refit_fn <- function(refit_fn, model) {
 refit_safely <- function(.f, newresp, ...) {
   warning_ <- NULL
   error_ <- NULL
+  message_ <- NULL
   result <- tryCatch(
     withCallingHandlers(
       .f(newresp, ...),
       warning = function(w) {
         warning_ <<- conditionMessage(w)
         invokeRestart("muffleWarning")
+      },
+      message = function(m) {
+        message_ <<- conditionMessage(m)
+        invokeRestart("muffleMessage")
       }
     ),
     error = function(e) {
@@ -99,7 +104,7 @@ refit_safely <- function(.f, newresp, ...) {
       NULL
     }
   )
-  list(value = result, warning = warning_, error = error_)
+  list(value = result, message = message_, warning = warning_, error = error_)
 }
 
 refitting_functions <- function() {

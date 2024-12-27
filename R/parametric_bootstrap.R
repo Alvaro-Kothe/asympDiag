@@ -24,6 +24,8 @@
 #'   the refit procedure, the results will be a list, regardless of the value of this argument.
 #' @param stat_hc A function that verifies if the computed statistic is correct.
 #'  It should return nothing, just throw errors to halt execution.
+#' @param show_message_count Show total of captured messages from `refit_fn` as a message.
+#'  It only shows if the number of messages is greater than 0.
 #' @param show_warning_count Show total of captured warnings from `refit_fn` as a warning.
 #'  It only shows if the number of warnings is greater than 0.
 #' @param show_not_converged_count Show total of models that didn't converge as a warning.
@@ -53,6 +55,7 @@
 parametric_bootstrap <- function(model, statistic, nsim,
                                  responses = NULL, refit_fn = NULL, show_progress = TRUE,
                                  simplify = TRUE, stat_hc = NULL,
+                                 show_message_count = TRUE,
                                  show_warning_count = TRUE,
                                  show_not_converged_count = TRUE,
                                  ...) {
@@ -62,6 +65,7 @@ parametric_bootstrap <- function(model, statistic, nsim,
   nsim <- length(result$responses)
   result$result <- vector("list", nsim)
   result$simulation_warning <- logical(nsim)
+  result$simulation_message <- logical(nsim)
   result$converged <- rep(NA, nsim)
 
   if (show_progress) cli::cli_progress_bar("Running simulation", total = nsim)
@@ -70,6 +74,7 @@ parametric_bootstrap <- function(model, statistic, nsim,
 
     refit_result <- refit_safely(refit_fn, y_star, ...)
     result$simulation_warning[i] <- !is.null(refit_result$warning)
+    result$simulation_message[i] <- !is.null(refit_result$message)
     model_refit <- refit_result$value
     if (show_progress) cli::cli_progress_update()
 
@@ -85,7 +90,8 @@ parametric_bootstrap <- function(model, statistic, nsim,
     result$result[[i]] <- stat
   }
   if (show_progress) cli::cli_progress_done()
-  bootstrap_health_check(result$result, result$simulation_warning, result$converged,
+  bootstrap_health_check(result$result, result$simulation_message, result$simulation_warning, result$converged,
+    show_message_count = show_message_count,
     show_warning_count = show_warning_count,
     show_not_converged_count = show_not_converged_count
   )
@@ -97,7 +103,8 @@ parametric_bootstrap <- function(model, statistic, nsim,
   result
 }
 
-bootstrap_health_check <- function(result, warnings, converged,
+bootstrap_health_check <- function(result, messages, warnings, converged,
+                                   show_message_count = TRUE,
                                    show_warning_count = TRUE,
                                    show_not_converged_count = TRUE) {
   if ((nf <- sum(sapply(result, is.null))) > 0) {
@@ -113,5 +120,8 @@ bootstrap_health_check <- function(result, warnings, converged,
   }
   if (show_not_converged_count && (nc <- sum(!converged, na.rm = TRUE)) > 0) {
     warning(nc, " simulations diverged.")
+  }
+  if (show_message_count && (mc <- sum(messages)) > 0) {
+    message(mc, " simulations shown messages.")
   }
 }
