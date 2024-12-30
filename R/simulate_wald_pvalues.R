@@ -83,24 +83,59 @@ simulate_wald_pvalues <- function(model, nsim = 1000, responses = NULL,
 
   responses <- get_responses(responses, model, nsim)
 
+  stat_fn <- function(obj) {
+    coef_ <- coef_fn(obj)
+    vc <- vcov_fn(obj)
+    diff_null <- coef_ - test_coefficients
+    wald_stat_uni <- (diff_null)^2 / diag(vc)
+    puni <- 1 - stats::pchisq(wald_stat_uni, 1)
+
+    vcov_inv <- tryCatch(solve(vc),
+      error = function(e) {
+        NULL
+      }
+    )
+    pjoint <- NA_real_
+    if (!is.null(vcov_inv)) {
+      stat_joint <- diff_null %*% vcov_inv %*% diff_null
+      pjoint <- 1 - stats::pchisq(stat_joint, length(test_coefficients))
+    }
+
+    list(coefs = coef_, vcov = vc, puni = puni, pjoint = c(pjoint))
+  }
+
   sim_result <- parametric_bootstrap(
-    model = model, statistic = function(x) list(coef_fn(x), vcov_fn(x)),
+    model = model, statistic = stat_fn,
     nsim = nsim, refit_fn = refit_fn, responses = responses,
     simplify = FALSE, show_progress = show_progress,
     stat_hc = NULL, ...
   )
-  pvalues <- compute_pvalues(sim_result$result, test_coefficients)
-  p_values_health_check(pvalues)
+
+  nsim <- length(sim_result$result)
+  pvmatrix <- matrix(NA_real_,
+    nrow = length(test_coefficients), ncol = nsim, dimnames = list(names(test_coefficients))
+  )
+  pjoint <- rep_len(NA_real_, nsim)
+  for (i in seq_along(sim_result$result)) {
+    if (!is.null(sim_result$result[[i]])) {
+      pvmatrix[, i] <- sim_result$result[[i]]$puni
+      pjoint[[i]] <- sim_result$result[[i]]$pjoint
+    }
+  }
 
   out <- list(
-    simulation_fixef = lapply(sim_result$result, function(x) x[[1]]),
-    simulation_vcov = lapply(sim_result$result, function(x) x[[2]]),
+    simulation_fixef = lapply(sim_result$result, function(x) x$coefs),
+    simulation_vcov = lapply(sim_result$result, function(x) x$vcov),
     simulation_message = sim_result$simulation_message,
     simulation_warning = sim_result$simulation_warning,
     converged = sim_result$converged,
-    responses = responses, pvalues_matrix = pvalues$matrix, pvalues_joint = pvalues$joint,
+    responses = responses,
+    pvalues_matrix = pvmatrix,
+    pvalues_joint = pjoint,
     test_coefficients = test_coefficients
   )
+
+  p_values_health_check(out)
 
   class(out) <- "AD_pvalues"
   if (plot.it) {
@@ -112,41 +147,10 @@ simulate_wald_pvalues <- function(model, nsim = 1000, responses = NULL,
 }
 
 p_values_health_check <- function(x) {
-  if ((nsing <- sum(is.na(x$joint))) > 0) {
+  success_refit <- !sapply(x$simulation_fixef, is.null)
+  if ((nsing <- sum(success_refit & is.na(x$pvalues_joint))) > 0) {
     warning("Couldn't inverse vcov from ", nsing, " simulations.")
   }
-}
-
-compute_pvalues <- function(result, test_coefficients) {
-  nsim <- length(result)
-  ncoef <- length(test_coefficients)
-  joint <- rep(NA_real_, nsim)
-  mat <- matrix(NA_real_, ncoef, nsim, dimnames = list(names(test_coefficients)))
-  for (i in seq_len(nsim)) {
-    if (is.null(result[[i]])) next
-    coef_ <- result[[i]][[1]]
-    vc <- result[[i]][[2]]
-    wald_stat_uni <- (coef_ - test_coefficients)^2 / diag(vc)
-    mat[, i] <- 1 - stats::pchisq(wald_stat_uni, 1)
-
-    joint[[i]] <- compute_p_values_joint(coef_, vc, test_coefficients)
-  }
-  list(matrix = mat, joint = joint)
-}
-
-compute_p_values_joint <- function(coefs, vcov, generator_coef) {
-  vcov_inv <- tryCatch(solve(vcov),
-    error = function(e) {
-      NULL
-    }
-  )
-  if (is.null(vcov_inv)) {
-    return(NA_real_)
-  }
-  dif_nul <- coefs - generator_coef
-  chisq_stat <- t(dif_nul) %*% vcov_inv %*% dif_nul
-
-  1 - stats::pchisq(chisq_stat, length(generator_coef))
 }
 
 #' Plot Empirical Cumulative Distribution Function (ECDF) of p-values
