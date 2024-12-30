@@ -113,7 +113,7 @@ bootstrap_health_check <- function(result, messages, warnings, converged,
         "Could not refit any model. Verify the `refit_fn` and the `responses`."
       )
     }
-    warning(nf, " statistics not computed.")
+    warning(sprintf("Could not refit %d models.", nf))
   }
   if (show_warning_count && (sw <- sum(warnings)) > 0) {
     warning(sw, " simulations threw warnings.")

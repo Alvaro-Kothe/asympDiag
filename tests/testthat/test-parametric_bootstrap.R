@@ -43,7 +43,7 @@ test_that("parametric_bootstrap returns correct length with errors within simula
 
 test_that("health_check works as expected", {
   expect_error(bootstrap_health_check(list(NULL), FALSE, FALSE), "Could not refit")
-  expect_warning(bootstrap_health_check(list("foo", NULL), FALSE, FALSE, TRUE), "1 statistics not computed")
+  expect_warning(bootstrap_health_check(list("foo", NULL), FALSE, FALSE, TRUE), "Could not refit 1 models.")
   bootstrap_health_check(list("foo", "foo"), c(FALSE, FALSE), c(FALSE, TRUE), TRUE) |>
     expect_warning("1 simulations threw warnings")
   bootstrap_health_check(list("foo", "foo"), c(FALSE, FALSE), c(FALSE, FALSE), c(FALSE, TRUE)) |>
