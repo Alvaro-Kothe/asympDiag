@@ -56,12 +56,17 @@ test_that("simulate_wald_pvalues is able to capture warnings and errors", {
   foo <- expand.grid(a = factor(1:3), b = factor(1:3))
   foo$y <- 1
   fit <- glm(y ~ a + b, data = foo, family = poisson())
-  responses <- data.frame(s1 = foo$y, s2 = c(1, rep(0, 8)), s3 = c(-1, rep(0, 8)))
-  suppressWarnings(expect_no_error(
+  responses <- data.frame(s1 = foo$y, s2 = (0:8) * 100, s3 = c(-1, rep(0, 8)), s4 = c(1000, rep_len(0, 8)))
+  expect_no_error(
     pv <- simulate_wald_pvalues(fit, responses = responses)
-  ))
-  expect_identical(pv$simulation_warning, c(FALSE, TRUE, FALSE))
-  expect_identical(pv$pvalues_joint, c(1, 1, NA))
+  ) |>
+    expect_warning("Could not refit 1 models") |> # s3 should error because of -1
+    expect_warning("1 simulations diverged") |> # s4 should diverge with warning
+    expect_warning("1 simulations threw warnings")
+  expect_identical(pv$simulation_warning, c(FALSE, FALSE, FALSE, TRUE))
+  expect_equal(pv$pvalues_joint, c(1, 0, NA, 0))
+  expect_equal(pv$pvalues_matrix[1, ], c(1, 0, NA, 0))
+  expect_equal(pv$pvalues_matrix[1, 1:3], c(1, 0, NA))
 })
 
 test_that("simulate_wald_pvalues throw warning with singular matrix", {
@@ -234,11 +239,27 @@ test_that("simulate_wald_pvalues() with custom method works", {
   )
 })
 
+test_that("simulate_wald_pvalues return the correct types", {
+  fit <- simple_lm_fit()
+  withr::local_seed(1)
+  pv <- simulate_wald_pvalues(fit, nsim = 2)
+
+  expect_type(pv$simulation_fixef, "list")
+  expect_type(pv$simulation_vcov, "list")
+  expect_vector(pv$simulation_message, ptype = logical(), size = 2)
+  expect_vector(pv$simulation_warning, ptype = logical(), size = 2)
+  expect_vector(pv$converged, ptype = logical(), size = 2)
+  expect_type(pv$responses, "list")
+  expect_identical(dim(pv$pvalues_matrix), c(2L, 2L)) # Check if is matrix with correct dims
+  expect_vector(pv$pvalues_joint, ptype = numeric(), size = 2)
+  expect_vector(pv$test_coefficients, ptype = numeric(), size = 2)
+})
+
 test_that("pvalues health check", {
-  fine <- list(joint = c(1, 1, 1))
+  fine <- list(simulation_fixef = list(2, 2, 2), pvalues_joint = c(1, 1, 1))
   expect_no_condition(p_values_health_check(fine))
-  sing <- list(joint = c(NA, 1, NA))
-  expect_warning(p_values_health_check(sing), "Couldn't inverse vcov from 2 simulations")
+  sing <- list(simulation_fixef = list(NULL, 2, 2), pvalues_joint = c(NA, 1, NA))
+  expect_warning(p_values_health_check(sing), "Couldn't inverse vcov from 1 simulations")
 })
 
 test_that("plot_pvalues errors when there is no available p-value to plot", {
