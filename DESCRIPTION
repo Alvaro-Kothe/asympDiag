@@ -1,7 +1,7 @@
 Type: Package
 Package: asympDiag
 Title: Diagnostic Tools for Asymptotic Theory
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person("Álvaro", "Kothe", , "kothe65@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0003-2114-3193")),
