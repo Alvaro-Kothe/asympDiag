@@ -2,13 +2,28 @@
 % Please edit documentation in R/get_model_response.R
 \name{get_model_response}
 \alias{get_model_response}
-\title{Get Model Response}
+\title{Extract the Response Variable from a Model Object}
 \usage{
 get_model_response(object)
 }
 \arguments{
-\item{object}{Model to extract responses from.}
+\item{object}{A fitted model from which the response variable should be extracted.}
+}
+\value{
+The response variable extracted from the model. If it couldn't be extracted,
+the function returns \code{NULL}.
 }
 \description{
-Get Model Response
+This function is designed to extract the response variable from a fitted model object.
+}
+\details{
+The default method attempts to create a model frame using \code{\link[=model.frame]{model.frame()}}.
+Any error encountered during this process is caught and
+results in a \code{NULL} return value.
+}
+\examples{
+lm_model <- lm(mpg ~ wt + cyl, data = mtcars)
+response <- get_model_response(lm_model)
+print(response)
+
 }
