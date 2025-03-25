@@ -242,6 +242,8 @@ plot.AD_pvalues <- function(x,
 #' @inheritParams plot.AD_pvalues
 #' @param p_values vector of p-values
 #' @param main main caption passed to [plot]
+#'
+#' @return No return value, called for side effects
 #' @export
 plot_ecdf_pvalue <- function(p_values,
                              ks_test = TRUE, signif = c(0.01, 0.05, 0.10),

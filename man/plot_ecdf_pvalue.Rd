@@ -39,6 +39,9 @@ distinguish between the p-value and U(0, 1) curves. Defaults to TRUE.}
 
 \item{...}{extra arguments passed to \link[graphics:plot.default]{graphics::plot}}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Plot Empirical Cumulative Distribution Function (ECDF) of p-values
 }

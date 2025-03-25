@@ -30,6 +30,9 @@ the envelope band, respectively.}
 
 \item{...}{extra arguments passed to \link[graphics:plot.default]{graphics::plot}}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Plot AD_envelope
 }
