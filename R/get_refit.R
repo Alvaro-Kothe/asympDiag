@@ -27,6 +27,7 @@ refit_model <- function(object, newresp, ...) {
 #' Find a working refitting function
 #' Try to refit the model using the previously used response
 #' @keywords internal
+#' @noRd
 find_refit_fn <- function(object, y) {
   if (is.null(y)) {
     return(refit_model)
@@ -83,6 +84,7 @@ default_refit_fn <- function(refit_fn, model) {
 #' @param newresp response variable used to fit the model.
 #' @param ... arguments passed to other methods.
 #' @keywords internal
+#' @noRd
 refit_safely <- function(.f, newresp, ...) {
   warning_ <- NULL
   error_ <- NULL
@@ -119,6 +121,7 @@ refitting_functions <- function() {
 #' Update the object with new response using only model frame.
 #'
 #' @inheritParams get_refit
+#' @noRd
 update_using_model_frame <- function(object, newresp, ...) {
   if (as.character(stats::formula(object)[[2]])[[1]] == "c") {
     stop("Can't update a model with formula defined with `c`.")
@@ -145,6 +148,7 @@ update_using_model_frame <- function(object, newresp, ...) {
 #' as it's prone to run with memory issues.
 #'
 #' @inheritParams get_refit
+#' @noRd
 update_using_formula <- function(object, newresp, ...) {
   dots <- list(...)
   if ("formula." %in% names(dots)) {
