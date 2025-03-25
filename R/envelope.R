@@ -13,7 +13,7 @@
 #'
 #' @param model A model to generate responses and compute the observed residuals.
 #' @param residual_fn A function to calculate model residuals. The default is
-#'   [envel_resid()] for an absolute residual.
+#'   [envelope_residual()] for an absolute residual.
 #' @param alpha The significance level for constructing the envelope bounds.
 #'   Defaults to 0.05.
 #' @param nsim The number of simulations to perform for envelope construction.
@@ -193,50 +193,12 @@ envelope_residual.lm <- function(object, ...) {
   function(obj) abs(stats::rstudent(obj, ...))
 }
 
-#' Recommended Residual for Envelope
-#'
-#' This function retrieves a function for recommended residuals for envelope.
-#' `envel_resid()` has been superseded in favour of [envelope_residual()].
-#'
-#' The residuals are absolute residuals to be plotted against the half-normal distribution.
-#' For class `glm` the default is deviance, except for the families poisson and binomial,
-#' where the default residual is [rstudent()], for deletion residuals.
-#' For class `lm`, the default is also [rstudent()].
-#' The default for other classes are [stats::residuals()], which means that, currently,
-#' there is no recommended residual.
-#'
-#' @param object an object for which the extraction of model residuals is meaningful.
-#'
-#' @export
-envel_resid <- function(object) {
-  UseMethod("envel_resid")
-}
-
-#' @rdname envel_resid
-#' @export
-envel_resid.default <- function(object) abs(stats::residuals(object))
-
-#' @rdname envel_resid
-#' @export
-envel_resid.glm <- function(object) {
-  res_fun <- switch(object$family$family,
-    binomial = ,
-    poisson = stats::rstudent,
-    stats::residuals.glm
-  )
-  abs(res_fun(object))
-}
-
-#' @rdname envel_resid
-#' @export
-envel_resid.lm <- function(object) abs(stats::rstudent(object))
-
 #' Envelope Plot
 #'
 #' Plot AD_envelope
 #'
 #' Create envelope plot. The expected quantile, by default, is from a half-normal
-#' distribution, as the default residuals from [envel_resid()] are absolute.
+#' distribution, as the default residuals from [envelope_residual()] are absolute.
 #' You may replace it with the `distribution` argument.
 #'
 #' @param x AD_envelope object, usually the result of [envelope()]
