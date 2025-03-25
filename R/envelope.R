@@ -248,6 +248,7 @@ envel_resid.lm <- function(object) abs(stats::rstudent(object))
 #' @param distribution quantile function for reference theoretical distribution.
 #' @param ... extra arguments passed to [graphics::plot]
 #'
+#' @return No return value, called for side effects
 #' @export
 plot.AD_envelope <- function(x,
                              colors = getOption("asympDiag.plot.AD_envelope.colors"),
