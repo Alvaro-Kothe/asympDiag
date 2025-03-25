@@ -13,8 +13,11 @@ get_refit(object, newresp, ...)
 
 \item{...}{other arguments passed to \code{refit} or \code{update}.}
 }
+\value{
+An updated model object, refitted using the new response variable.
+}
 \description{
-Refit a regression model.
+Refit an existing regression model using a new response variable.
 }
 \details{
 This generic method refit the \code{object} with the newresp.
@@ -24,4 +27,3 @@ the default fitting method may be overwritten with the \code{...}.
 \seealso{
 \code{\link[stats:update]{stats::update()}}, \code{\link[lme4:refit]{lme4::refit()}}
 }
-\keyword{internal}

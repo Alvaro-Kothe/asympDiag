@@ -43,15 +43,17 @@ find_refit_fn <- function(object, y) {
 
 #' Refit the Model
 #'
-#' Refit a regression model.
+#' Refit an existing regression model using a new response variable.
 #'
 #' This generic method refit the `object` with the newresp.
 #' It shold maintain the `object` properties by default, but some aspects of
 #' the default fitting method may be overwritten with the `...`.
 #'
 #' @inheritParams refit_model
+#'
+#' @return An updated model object, refitted using the new response variable.
 #' @seealso [stats::update()], [lme4::refit()]
-#' @keywords internal
+#' @export
 get_refit <- function(object, newresp, ...) {
   # TODO: If there is a conventional generic method to refit a model,
   #  preferably from the `stats` package, use it and delete this method.
