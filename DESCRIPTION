@@ -7,8 +7,13 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-2114-3193")),
     person("Alexandre", "Patriota", role = "aut")
   )
-Description: Tools to diagnose and assess the sample size of
-    models using Monte Carlo simulations.
+Description: Leveraging Monte Carlo simulations, this package provides
+    tools for diagnosing regression models. It implements a parametric
+    bootstrap framework to compute statistics, generates diagnostic
+    envelopes to assess goodness-of-fit, and evaluates type I error
+    control for Wald tests. By simulating data under the assumption that
+    the model is true, it helps to identify model mis-specifications and
+    enhances the reliability of the model inferences.
 License: MIT + file LICENSE
 URL: https://github.com/Alvaro-Kothe/asympDiag
 BugReports: https://github.com/Alvaro-Kothe/asympDiag/issues
