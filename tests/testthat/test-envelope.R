@@ -162,24 +162,6 @@ test_that("compute values outside correctly", {
   expect_identical(is_outside(c(1, 2, 3), c(1, 0, 3.01), c(1, 1.9, 5)), c(FALSE, TRUE, TRUE))
 })
 
-test_that("envelope recommended residual is correct", {
-  m <- c(1, 4, 10, 30)
-  y <- c(0, 2, 5, 15)
-  fit_bin <- glm(cbind(y, m - y) ~ 1, family = binomial())
-  will_resid <- function(obj) {
-    h <- hatvalues(obj)
-    sqrt(
-      rstandard(obj, type = "deviance")^2 * (1 - h) +
-        rstandard(obj, type = "pearson")^2 * h
-    )
-  }
-  fit_poi <- glm(y ~ 1, family = poisson())
-  fit_lm <- lm(y ~ 1)
-  expect_equal(envel_resid(fit_bin), will_resid(fit_bin))
-  expect_equal(envel_resid(fit_poi), will_resid(fit_poi))
-  expect_equal(envel_resid(fit_lm), abs(rstudent(fit_lm)))
-})
-
 test_that("envelope_residual extracts the correct method", {
   fit_lm <- simple_lm_fit()
   fit_poi <- simple_pois_fit()
@@ -212,11 +194,4 @@ test_that("envelope_residual works with envelope", {
   fit_lm <- simple_lm_fit()
   withr::local_seed(1)
   expect_no_error(envelope(fit_lm, nsim = 2, residual_fn = envelope_residual(fit_lm), plot.it = FALSE))
-})
-
-test_that("envelope works with envel_resid", {
-  fit <- simple_pois_fit()
-  withr::local_seed(1)
-  yyok <- simulate(fit, 5)
-  expect_no_error(envelope(fit, residual_fn = envel_resid, responses = yyok, no_warnings = TRUE))
 })

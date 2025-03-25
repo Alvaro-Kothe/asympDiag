@@ -38,6 +38,6 @@ Plot AD_envelope
 }
 \details{
 Create envelope plot. The expected quantile, by default, is from a half-normal
-distribution, as the default residuals from \code{\link[=envel_resid]{envel_resid()}} are absolute.
+distribution, as the default residuals from \code{\link[=envelope_residual]{envelope_residual()}} are absolute.
 You may replace it with the \code{distribution} argument.
 }

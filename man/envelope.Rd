@@ -23,7 +23,7 @@ envelope(
 \item{model}{A model to generate responses and compute the observed residuals.}
 
 \item{residual_fn}{A function to calculate model residuals. The default is
-\code{\link[=envel_resid]{envel_resid()}} for an absolute residual.}
+\code{\link[=envelope_residual]{envelope_residual()}} for an absolute residual.}
 
 \item{alpha}{The significance level for constructing the envelope bounds.
 Defaults to 0.05.}
