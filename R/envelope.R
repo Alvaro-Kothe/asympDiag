@@ -216,7 +216,10 @@ plot.AD_envelope <- function(x,
                              xlab = "Expected quantiles",
                              ylab = "Observed quantiles",
                              distribution = function(p) stats::qnorm((1 + p) / 2),
-                             ylim = base::range(c(x$observed, x$lower, x$upper)),
+                             ylim = base::range(
+                               c(x$observed, x$lower, x$upper),
+                               na.rm = TRUE, finite = TRUE
+                             ),
                              ...) {
   n <- length(x$observed)
   expected <- distribution(stats::ppoints(n))
