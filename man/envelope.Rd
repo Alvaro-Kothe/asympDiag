@@ -51,7 +51,6 @@ defaults to \code{get_refit(model, y, ...)}.}
 \value{
 An object of class \code{AD_envelope}, which contains the following components:
 \describe{
-\item{expected}{A vector of expected quantiles from a normal distribution.}
 \item{observed}{A vector of observed quantiles from the model residuals.}
 \item{outside}{A logical vector indicating whether each observation falls
 outside the constructed envelope bounds.}
