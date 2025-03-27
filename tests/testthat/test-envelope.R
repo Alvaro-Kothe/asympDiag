@@ -162,6 +162,16 @@ test_that("envelope don't show condition messages when its supposed to be remove
     expect_error()
 })
 
+test_that("can plot envelope with extreme values", {
+  # NOTE: this is a test that used to fail on ARM64 arch
+  withr::local_seed(1)
+  envelope(simple_lm_fit(),
+    nsim = 2, refit_fn = function(.y) msg_fit(.y), plot.it = TRUE
+  ) |>
+    expect_no_error() |>
+    suppressMessages()
+})
+
 test_that("compute values outside correctly", {
   expect_identical(is_outside(c(1, 2, 3), c(1, 0, 3.01), c(1, 1.9, 5)), c(FALSE, TRUE, TRUE))
 })
