@@ -13,3 +13,4 @@
 ^renv\.lock$
 ^screenshots$
 ^CRAN-SUBMISSION$
+^tags$

@@ -146,7 +146,7 @@ update_using_model_frame <- function(object, newresp, ...) {
 #'
 #' Create a new formula with `newresp` values directly on the formula left hand side.
 #'
-#' This function is designed to be used as a fallback for [update_using_model_frame()]
+#' This function is designed to be used as a fallback for `update_using_model_frame()`
 #' as it's prone to run with memory issues.
 #'
 #' @inheritParams get_refit

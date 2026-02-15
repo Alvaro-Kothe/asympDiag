@@ -192,7 +192,7 @@ envelope_residual.lm <- function(object, ...) {
   function(obj) abs(stats::rstudent(obj, ...))
 }
 
-deletion_residual <- function(object, infl = influence(object, do.coef = FALSE), ...) {
+deletion_residual <- function(object, infl = stats::influence(object, do.coef = FALSE), ...) {
   # This is the old stats:::rstudent.glm funciton with minor modifications
   if (is.null(infl)) {
     stop("'infl' must not be NULL")
