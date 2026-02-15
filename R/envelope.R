@@ -154,9 +154,9 @@ envelope_hc <- function(stat, nobs) {
 #'
 #' For objects of class `glm`, the default residuals are:
 #' - Deviance residuals, except for `poisson` and `binomial` families.
-#' - For `poisson` and `binomial` families, the residuals are [rstudent()], for the case deletion residual.
+#' - For `poisson` and `binomial` families it uses deletion residual adapted from [rstudent()].
 #'
-#' For objects of class `lm`, the default residuals are also [rstudent()].
+#' For objects of class `lm`, the default residuals is [rstudent()].
 #'
 #' For other classes, the default is [stats::residuals()], meaning no specialized recommendation is currently provided.
 #'
@@ -181,7 +181,7 @@ envelope_residual.default <- function(object, ...) {
 envelope_residual.glm <- function(object, ...) {
   switch(object$family$family,
     binomial = ,
-    poisson = function(obj) abs(stats::rstudent(obj, ...)),
+    poisson = function(obj) deletion_residual(obj, ...),
     function(obj) abs(stats::residuals.glm(obj, type = "deviance", ...))
   )
 }
@@ -190,6 +190,17 @@ envelope_residual.glm <- function(object, ...) {
 #' @export
 envelope_residual.lm <- function(object, ...) {
   function(obj) abs(stats::rstudent(obj, ...))
+}
+
+deletion_residual <- function(object, infl = influence(object, do.coef = FALSE), ...) {
+  # This is the old stats:::rstudent.glm funciton with minor modifications
+  if (is.null(infl)) {
+    stop("'infl' must not be NULL")
+  }
+  r <- infl$dev.res
+  r <- sqrt(r^2 + (infl$hat * infl$pear.res^2) / (1 - infl$hat))
+  r[is.infinite(r)] <- NaN
+  r
 }
 
 #' Envelope Plot

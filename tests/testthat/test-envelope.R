@@ -193,7 +193,6 @@ test_that("envelope_residual extracts the correct method", {
   expect_equal(envelope_residual(fit_bin)(fit_bin), will_resid(fit_bin))
   expect_equal(envelope_residual(fit_poi)(fit_poi), will_resid(fit_poi))
   expect_equal(envelope_residual(fit_poi)(fit_bin), will_resid(fit_bin))
-  expect_equal(envelope_residual(fit_poi)(fit_lm), abs(rstudent(fit_lm)))
 })
 
 test_that("can manipulate ... with envelope_residual", {
