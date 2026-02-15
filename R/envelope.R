@@ -154,9 +154,9 @@ envelope_hc <- function(stat, nobs) {
 #'
 #' For objects of class `glm`, the default residuals are:
 #' - Deviance residuals, except for `poisson` and `binomial` families.
-#' - For `poisson` and `binomial` families, the residuals are [rstudent()], for the case deletion residual.
+#' - For `poisson` and `binomial` families it uses deletion residual adapted from [rstudent()].
 #'
-#' For objects of class `lm`, the default residuals are also [rstudent()].
+#' For objects of class `lm`, the default residuals is [rstudent()].
 #'
 #' For other classes, the default is [stats::residuals()], meaning no specialized recommendation is currently provided.
 #'
