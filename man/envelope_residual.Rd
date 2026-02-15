@@ -31,10 +31,10 @@ These residuals are typically absolute values to be compared against the half-no
 For objects of class \code{glm}, the default residuals are:
 \itemize{
 \item Deviance residuals, except for \code{poisson} and \code{binomial} families.
-\item For \code{poisson} and \code{binomial} families, the residuals are \code{\link[=rstudent]{rstudent()}}, for the case deletion residual.
+\item For \code{poisson} and \code{binomial} families it uses deletion residual adapted from \code{\link[=rstudent]{rstudent()}}.
 }
 
-For objects of class \code{lm}, the default residuals are also \code{\link[=rstudent]{rstudent()}}.
+For objects of class \code{lm}, the default residuals is \code{\link[=rstudent]{rstudent()}}.
 
 For other classes, the default is \code{\link[stats:residuals]{stats::residuals()}}, meaning no specialized recommendation is currently provided.
 }
