@@ -1,3 +1,2 @@
-- Update documentation for the `envelope` function
-- Remove non-finite values before computing the `ylim` for the envelope plot
+- Updated function to compute residuals for Poisson and binomial regression models.
 - Update tests
