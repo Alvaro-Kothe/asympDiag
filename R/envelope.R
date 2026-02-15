@@ -198,7 +198,7 @@ deletion_residual <- function(object, infl = influence(object, do.coef = FALSE),
     stop("'infl' must not be NULL")
   }
   r <- infl$dev.res
-  r <- sqrt(r^2 + (infl$hat * infl$pear.res^2)/(1 - infl$hat))
+  r <- sqrt(r^2 + (infl$hat * infl$pear.res^2) / (1 - infl$hat))
   r[is.infinite(r)] <- NaN
   r
 }
