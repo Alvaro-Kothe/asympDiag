@@ -23,6 +23,7 @@ test_that("Concatenate increases p_values and simulations length", {
 })
 
 test_that("Concatenates with list of size 1 returns same object", {
+  withr::local_seed(1)
   sims <- list(sim_cyl())
   expect_identical(concat_pvalues(sims), sims[[1]])
 })
