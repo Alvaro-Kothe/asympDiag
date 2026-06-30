@@ -92,12 +92,12 @@ test_that("envelope works with glmmTMB", {
     zi = ~mined,
     family = poisson, data = Salamanders
   )
-  expect_no_error(envelope(m1, nsim = 2, residual_fn = residuals))
+  expect_no_error(envelope(m1, nsim = 2, residual_fn = residuals, plot.it = FALSE))
   m2 <- glmmTMB::glmmTMB(count ~ spp + mined + (1 | site),
     zi = ~ spp + mined,
     family = glmmTMB::nbinom2, data = Salamanders
   )
-  expect_no_error(envelope(m2, nsim = 2, residual_fn = residuals))
+  expect_no_error(envelope(m2, nsim = 2, residual_fn = residuals, plot.it = FALSE))
 })
 
 test_that("envelope works with complex responses", {
