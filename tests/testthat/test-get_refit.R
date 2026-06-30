@@ -65,6 +65,7 @@ test_that("can refit for models adjusted with cbind", {
 })
 
 test_that("find_refit_fn returns the expected function", {
+  skip_if_not_installed("lme4")
   lm_fit <- simple_lm_fit()
   y <- simple_y()
   expect_identical(find_refit_fn(lm_fit, y), update_using_model_frame)
@@ -81,6 +82,7 @@ test_that("find_refit_fn returns the expected function", {
 })
 
 test_that("Behavior when lme4 is unavailable using with_mocked_bindings", {
+  skip_if_not_installed("lme4")
   # Mock the requireNamespace function to return FALSE for "lme4"
   with_mocked_bindings(
     requireNamespace = function(pkg, quietly = TRUE) {
