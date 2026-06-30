@@ -64,6 +64,7 @@ test_that("envelope() is compatible with models using cbind", {
 })
 
 test_that("envelope works with lme4::lmer", {
+  skip_if_not_installed("lme4")
   skip_on_cran()
   withr::local_seed(1)
   data("sleepstudy", package = "lme4")
@@ -72,6 +73,7 @@ test_that("envelope works with lme4::lmer", {
 })
 
 test_that("envelope works with lme4::glmer", {
+  skip_if_not_installed("lme4")
   skip_on_cran()
   withr::local_seed(1)
   data("cbpp", package = "lme4")
@@ -82,6 +84,7 @@ test_that("envelope works with lme4::glmer", {
 })
 
 test_that("envelope works with glmmTMB", {
+  skip_if_not_installed("glmmTMB")
   skip_on_cran()
   withr::local_seed(1)
   data("Salamanders", package = "glmmTMB")

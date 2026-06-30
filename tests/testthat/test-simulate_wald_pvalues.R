@@ -122,6 +122,7 @@ test_that("simulate_wald_pvalues convergence for glm is logical", {
 
 test_that("Can compute p_values from merMod class", {
   withr::local_seed(1)
+  skip_if_not_installed("lme4")
   data("sleepstudy", package = "lme4")
   fit <- lme4::lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
   withr::local_seed(1)
@@ -130,6 +131,7 @@ test_that("Can compute p_values from merMod class", {
 
 test_that("can compute p_values from glmmTMB", {
   withr::local_seed(1)
+  skip_if_not_installed("glmmTMB")
   data("Salamanders", package = "glmmTMB")
   m1 <- glmmTMB::glmmTMB(count ~ mined + (1 | site),
     zi = ~mined,
@@ -139,6 +141,7 @@ test_that("can compute p_values from glmmTMB", {
 })
 
 test_that("Can compute p_values using other vcov functions", {
+  skip_if_not_installed("sandwich")
   fit <- glm(c(1, 3, 5) ~ c(1, 2, 3), family = poisson())
   withr::local_seed(1)
   new_resp <- simulate(fit, nsim = 2, seed = 1)
