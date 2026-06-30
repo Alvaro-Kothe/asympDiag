@@ -35,7 +35,7 @@ test_that("rownames matrix is the same as model's coefficients names", {
   withr::local_seed(1)
   df <- data.frame("foo" = c(1, 2, 3, 7), "bar" = c(2, 3, 1, 9), "y" = c(3, 5, 1, 2))
   fit <- lm(y ~ foo + bar, data = df)
-  p_values <- simulate_wald_pvalues(fit, nsim = 2)
+  p_values <- simulate_wald_pvalues(fit, nsim = 2, plot.it = FALSE)
   expect_named(p_values$pvalues_matrix[, 1], c("(Intercept)", "foo", "bar"))
 })
 
@@ -100,7 +100,7 @@ test_that("simulate_wald_pvalues works with poisson with offset", {
 
   suppressWarnings({
     fit <- glm(y ~ x + offset(offset_), family = poisson())
-    p_values <- simulate_wald_pvalues(fit, nsim = 5)
+    p_values <- simulate_wald_pvalues(fit, nsim = 5, plot.it = FALSE)
   })
 
   expect_length(p_values$simulation_fixef[[1]], 2)
@@ -109,14 +109,14 @@ test_that("simulate_wald_pvalues works with poisson with offset", {
 test_that("simulate_wald_pvalues convergence for lm is NA", {
   withr::local_seed(1)
   fit <- simple_lm_fit()
-  p_values <- simulate_wald_pvalues(fit, nsim = 2)
+  p_values <- simulate_wald_pvalues(fit, nsim = 2, plot.it = FALSE)
   expect_equal(p_values$converged, c(NA, NA))
 })
 
 test_that("simulate_wald_pvalues convergence for glm is logical", {
   fit <- glm(c(1, 3, 5) ~ c(1, 2, 3), family = poisson())
   withr::local_seed(1)
-  p_values <- simulate_wald_pvalues(fit, nsim = 2)
+  p_values <- simulate_wald_pvalues(fit, nsim = 2, plot.it = FALSE)
   expect_equal(p_values$converged, c(TRUE, TRUE))
 })
 
@@ -125,8 +125,7 @@ test_that("Can compute p_values from merMod class", {
   skip_if_not_installed("lme4")
   data("sleepstudy", package = "lme4")
   fit <- lme4::lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
-  withr::local_seed(1)
-  expect_no_error(p_values <- simulate_wald_pvalues(fit, nsim = 2))
+  expect_no_error(p_values <- simulate_wald_pvalues(fit, nsim = 2, plot.it = FALSE))
 })
 
 test_that("can compute p_values from glmmTMB", {
@@ -137,7 +136,7 @@ test_that("can compute p_values from glmmTMB", {
     zi = ~mined,
     family = poisson, data = Salamanders
   )
-  expect_no_error(simulate_wald_pvalues(m1, nsim = 2))
+  expect_no_error(simulate_wald_pvalues(m1, nsim = 2, plot.it = FALSE))
 })
 
 test_that("Can compute p_values using other vcov functions", {
@@ -273,7 +272,7 @@ test_that("pvalues health check", {
 test_that("plot_pvalues errors when there is no available p-value to plot", {
   withr::local_seed(1)
   fit <- simple_lm_fit()
-  p_values <- simulate_wald_pvalues(fit, nsim = 5)
+  p_values <- simulate_wald_pvalues(fit, nsim = 5, plot.it = FALSE)
   p_values$converged <- c(FALSE, FALSE, FALSE, TRUE, TRUE)
   p_values$pvalues_joint[4:5] <- NA_real_
   expect_no_error(plot(p_values, ask = FALSE, converged_only = FALSE))
@@ -286,7 +285,7 @@ test_that("plot_pvalues errors when there is no available p-value to plot", {
 test_that("plot pvalues errors when all pvalues generated with messages are removed", {
   withr::local_seed(1)
   fit <- simple_lm_fit()
-  (p_values <- simulate_wald_pvalues(fit, nsim = 2, refit_fn = msg_fit)) |>
+  (p_values <- simulate_wald_pvalues(fit, nsim = 2, refit_fn = msg_fit, plot.it = FALSE)) |>
     expect_message("2 simulations shown messages")
   expect_no_error(plot(p_values, ask = FALSE))
   expect_error(
