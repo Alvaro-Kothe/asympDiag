@@ -8,6 +8,7 @@ test_that("envelope() works with responses", {
 })
 
 test_that("envelope() observed and expected concides with qqnorm", {
+  withr::local_seed(1)
   fit <- lm(mpg ~ cyl, data = mtcars)
   residual_fn <- stats::rstudent
   env_meas <- envelope(fit, residual_fn = residual_fn, nsim = 5, plot.it = FALSE)
@@ -17,6 +18,7 @@ test_that("envelope() observed and expected concides with qqnorm", {
 })
 
 test_that("envelope intervals are correct", {
+  withr::local_seed(1)
   fit <- simple_lm_fit()
   env_meas <- envelope(fit, residual_fn = residuals, nsim = 5, plot.it = FALSE)
   expect_true(all(env_meas$lower <= env_meas$med & env_meas$med <= env_meas$upper))
@@ -46,6 +48,7 @@ test_that("envelope() detects incorrect fit", {
 })
 
 test_that("plot envelope runs without errors", {
+  withr::local_seed(1)
   expect_no_error({
     env_meas <- envelope(lm(c(1, 5) ~ 1), nsim = 2, residual_fn = residuals, plot.it = FALSE)
     plot(env_meas)
@@ -53,6 +56,7 @@ test_that("plot envelope runs without errors", {
 })
 
 test_that("envelope() is compatible with models using cbind", {
+  withr::local_seed(1)
   m <- c(1, 4, 10, 30)
   y <- c(0, 2, 5, 15)
   fit <- glm(cbind(y, m - y) ~ 1, family = binomial())
@@ -61,6 +65,7 @@ test_that("envelope() is compatible with models using cbind", {
 
 test_that("envelope works with lme4::lmer", {
   skip_on_cran()
+  withr::local_seed(1)
   data("sleepstudy", package = "lme4")
   fit <- lme4::lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
   expect_no_error(envelope(fit, nsim = 2, residual_fn = residuals, plot.it = FALSE))
@@ -68,6 +73,7 @@ test_that("envelope works with lme4::lmer", {
 
 test_that("envelope works with lme4::glmer", {
   skip_on_cran()
+  withr::local_seed(1)
   data("cbpp", package = "lme4")
   fit <- lme4::glmer(cbind(incidence, size - incidence) ~ period + (1 | herd),
     data = cbpp, family = binomial
@@ -77,6 +83,7 @@ test_that("envelope works with lme4::glmer", {
 
 test_that("envelope works with glmmTMB", {
   skip_on_cran()
+  withr::local_seed(1)
   data("Salamanders", package = "glmmTMB")
   m1 <- glmmTMB::glmmTMB(count ~ mined + (1 | site),
     zi = ~mined,
